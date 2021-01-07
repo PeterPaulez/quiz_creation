@@ -1,6 +1,7 @@
 # Al hacer el import tengo que mentar 'users' que es el paquete
 import users.helpers as helpers
-helper = helpers.Helpers() 
+import users.user as user
+helper = helpers.Helpers()
 
 class Actions:
     def Register(self):
@@ -14,24 +15,57 @@ class Actions:
                 isdone = True
                 helper.printOut('Good Bye, I am here to server you!')
             elif name != '' and email !='' and password != '':
-                isdone = True
-                helper.printOut('Your registration is ok and you are just logged')
+                emailOk = self.checkEmail(email)
+                passOk = self.checkPassword(password)
+                if not emailOk:
+                    helper.printError(f'Your email: {email} is not a valid email.', 3.0)
+                elif not passOk:
+                    helper.printError('You have to write a valid password (At least 6 chars with Letters and Numbers).', 3.0)
+                elif len(name)<=2:
+                    helper.printError('You have to write a valid name (At least more than 2 chars).', 3.0)
+                else:
+                    isdone = True
+                    userData = user.User(name, email, password)
+                    userData.register()
+                    helper.printOut('Your registration is ok and you are just logged')
             else:
-               helper.printError('You have to file correctly your data or write out to exit.', 2.0)
+               helper.printError('You have to file correctly your data or write out to exit (All fields are mandatory).', 3.0)
 
     def Login(self):
         isdone = False
         while not isdone:
             helper.printOut('Ok, let\'s login you. I need some data from you')
-            name = input('Please, write your Email?\r\n')
+            email = input('Please, write your Email?\r\n')
             password = input('Please, write your Password?\r\n')
-            if name == 'out' or password == 'out':
+            if email == 'out' or password == 'out':
                 isdone = True
                 helper.printOut('Good Bye, I am here to server you!')
-            elif name != '' and password != '':
-                isdone = True
-                helper.printOut('You are just logged')
+            elif email != '' and password != '':
+                emailOk = self.checkEmail(email)
+                passOk = self.checkPassword(password)
+                if not emailOk:
+                    helper.printError(f'Your email: {email} is not a valid email.', 3.0)
+                elif not passOk:
+                    helper.printError('You have to write a valid password (At least 6 chars with Letters and Numbers).', 3.0)
+                else:
+                    isdone = True
+                    helper.printOut('You are just logged')
             else:
-               helper.printError('You have to file correctly your data or write out to exit.', 2.0)
+               helper.printError('You have to file correctly your data or write out to exit.', 3.0)
+    
+    def checkEmail(self, email):
+        import re
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+        email = email.lower()
+        if re.search(regex,email):
+            return True
+        else:
+            return False
+    
+    def checkPassword(self, password):
+        if len(password)>=6 and password.isalnum():
+            return True
+        else:
+            return False
     
             
