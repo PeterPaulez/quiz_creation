@@ -16,7 +16,7 @@ while answer != 'out':
 
     
     if not type(answer) == int:
-        helper.printError('You have to write a number', 2.0)
+        helper.printError('You have to write a number', 3.0)
     else:
         if answer==1:
             # Register
@@ -27,4 +27,4 @@ while answer != 'out':
             action.Login()
             break
         else:
-            helper.printError('You have to write a correct number from the options bellow', 2.0)
+            helper.printError('You have to write a correct number from the options bellow', 3.0)

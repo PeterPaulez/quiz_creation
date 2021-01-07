@@ -20,7 +20,8 @@ class Helpers:
         time.sleep(sleepTime)
     
     def startOptions(self):
-        options = ''' 
+        options = f'Welcome to Quiz Creator APP\r\n{self.getSeparator()}\r\n'
+        options += '''        
         What do you want to do?
         1) Register
         2) Login
