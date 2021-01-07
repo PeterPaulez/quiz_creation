@@ -1,6 +1,7 @@
 import random, os
 from users import actions, quiz, user, helpers
 helper = helpers.Helpers()
+action = actions.Actions()
 helper.clean()
 
 
@@ -13,5 +14,17 @@ while answer != 'out':
     except:
         pass
 
+    
     if not type(answer) == int:
         helper.printError('You have to write a number', 2.0)
+    else:
+        if answer==1:
+            # Register
+            action.Register()
+            break
+        elif answer==2:
+            # Login
+            action.Login()
+            break
+        else:
+            helper.printError('You have to write a correct number from the options bellow', 2.0)
