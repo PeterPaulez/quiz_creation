@@ -1,5 +1,5 @@
 # Al hacer el import tengo que mentar 'users' que es el paquete
-import users.helpers as helpers
+import tools.helpers as helpers
 import users.user as user
 helper = helpers.Helpers()
 

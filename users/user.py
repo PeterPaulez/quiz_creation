@@ -1,4 +1,4 @@
-import users.sqlite as sql
+import tools.sqlite as sql
 import hashlib
 
 class User:

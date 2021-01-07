@@ -1,5 +1,6 @@
 import random, os
-from users import actions, quiz, user, helpers
+from users import actions, user
+from tools import helpers
 helper = helpers.Helpers()
 action = actions.Actions()
 helper.clean()
