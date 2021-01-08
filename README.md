@@ -1,6 +1,7 @@
-# Quiz Creation TEST
+# Quiz Creation
 
 - You can register/login users
-- Create new quizs
-- 2 different type of quiz, test or correct answer
-- Check your quizs results
+- Create new quizzes
+- 2 different type of quiz, pick the correct answer or write the answer
+- Check your quizzes results
+- Edit your quiz and see all results
