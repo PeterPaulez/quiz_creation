@@ -1,10 +1,11 @@
-# Al hacer el import tengo que mentar 'users' que es el paquete
 import tools.helpers as helpers
 import users.user as user
+import quiz.actions as quizActions
 helper = helpers.Helpers()
+quizAction = quizActions.Actions()
 
 class Actions:
-    def Register(self):
+    def register(self):
         isdone = False
         while not isdone:
             helper.printOut('Ok, let\'s register you. I need some data from you')
@@ -27,11 +28,11 @@ class Actions:
                     isdone = True
                     userData = user.User(name, email, password)
                     userData.register()
-                    helper.printOut('Your registration is ok and you are just logged')
+                    quizAction.quizMenu(userData)
             else:
                helper.printError('You have to file correctly your data or write out to exit (All fields are mandatory).', 3.0)
 
-    def Login(self):
+    def login(self):
         isdone = False
         while not isdone:
             helper.printOut('Ok, let\'s login you. I need some data from you')
@@ -48,8 +49,12 @@ class Actions:
                 elif not passOk:
                     helper.printError('You have to write a valid password (At least 6 chars with Letters and Numbers).', 3.0)
                 else:
-                    isdone = True
-                    helper.printOut('You are just logged')
+                    userData = user.User('', email, password)
+                    isdone = userData.login()
+                    if not isdone:
+                        helper.printError('There is not any user with this email and password.', 6.0)
+                    else:
+                        quizAction.quizMenu(userData)
             else:
                helper.printError('You have to file correctly your data or write out to exit.', 3.0)
     

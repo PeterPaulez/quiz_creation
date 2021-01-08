@@ -9,7 +9,7 @@ helper.clean()
 answer = ''
 while answer != 'out':
     helper.startOptions()
-    answer=input('Give me the number?\r\n')
+    answer=input('Give me the number or write out to exit?\r\n')
     try:
         answer=int(answer)
     except:
@@ -19,13 +19,13 @@ while answer != 'out':
     if not type(answer) == int:
         helper.printError('You have to write a number', 3.0)
     else:
-        if answer==1:
+        if answer == 1:
             # Register
-            action.Register()
+            action.register()
             break
-        elif answer==2:
+        elif answer == 2:
             # Login
-            action.Login()
+            action.login()
             break
         else:
             helper.printError('You have to write a correct number from the options bellow', 3.0)

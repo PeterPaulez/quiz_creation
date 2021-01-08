@@ -27,3 +27,16 @@ class Helpers:
         2) Login
         '''
         self.printOut(options)
+
+    def loggedOptions(self, user):
+        options = f'Welcome to Quiz Creator APP ({user.name})\r\n{self.getSeparator()}\r\n'
+        options += '''        
+        What do you want to do?
+        1) View your Quizzes
+        2) Search a Quiz
+        3) Create a new Quiz
+        4) Edit a Quiz
+        5) Delete a Quiz
+        6) View your grades
+        '''
+        self.printOut(options)
