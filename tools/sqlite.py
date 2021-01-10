@@ -16,6 +16,7 @@ class DataBase:
         'user_id INTEGER, '+
         'title varchar(255), '+
         'type TINYINT,'+
+        'data TEXT,'+
         'date_creation DATE)')
         connection.commit()
 
@@ -25,9 +26,23 @@ class DataBase:
         database = self.connection()
         connection = database[0]
         cursor = database[1]
-        cursor.execute('INSERT INTO '+table+' VALUES (null, "'+data.name+'", "'+data.email+'", "'+data.password+'")')
+        # KEYS
+        keys = ''
+        for key in data.keys():
+            keys += f'"{key}",'
+        keys = keys[:-1]
+        # VALUES
+        values = ''
+        for value in data.values():
+            values += f'"{value}",'
+        values = values[:-1]
+
+        # QUERY
+        cursor.execute('INSERT INTO '+table+' ('+keys+') VALUES ('+values+')')
         connection.commit()
         connection.close()
+
+        return cursor.lastrowid
 
     def select(self,table,select,where):
         database = self.connection()
@@ -39,3 +54,12 @@ class DataBase:
 
         return result
 
+    def update(self,table,update,where):
+        database = self.connection()
+        connection = database[0]
+        cursor = database[1]
+        cursor.execute('UPDATE '+table+' SET '+update+' WHERE '+where+'')
+        connection.commit()
+        connection.close()
+
+        return cursor.rowcount
