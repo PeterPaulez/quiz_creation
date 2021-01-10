@@ -8,9 +8,10 @@ class Actions:
     def register(self):
         isdone = False
         while not isdone:
-            helper.printOut('Ok, let\'s register you. I need some data from you')
+            helper.printOut(helper.printColor("HEADER",'Ok, let\'s register you. I need some data from you'))
             name = input('Please, write your Name?\r\n')
             email = input('Please, write your Email?\r\n')
+            email=email.lower()
             password = input('Please, write your Password (At least 6 chars with Letters and Numbers)?\r\n')
             if name == 'out' or email == 'out' or password == 'out':
                 isdone = True
@@ -19,24 +20,25 @@ class Actions:
                 emailOk = self.checkEmail(email)
                 passOk = self.checkPassword(password)
                 if not emailOk:
-                    helper.printError(f'Your email: {email} is not a valid email.', 3.0)
+                    helper.printError(f'Your email: {email} is not a valid email.')
                 elif not passOk:
-                    helper.printError('You have to write a valid password (At least 6 chars with Letters and Numbers).', 3.0)
+                    helper.printError('You have to write a valid password (At least 6 chars with Letters and Numbers).')
                 elif len(name)<=2:
-                    helper.printError('You have to write a valid name (At least more than 2 chars).', 3.0)
+                    helper.printError('You have to write a valid name (At least more than 2 chars).')
                 else:
                     isdone = True
-                    userData = user.User(name, email, password)
+                    userData = user.User(0, name, email, password)
                     userData.register()
                     quizAction.quizMenu(userData)
             else:
-               helper.printError('You have to file correctly your data or write out to exit (All fields are mandatory).', 3.0)
+               helper.printError('You have to file correctly your data or write out to exit (All fields are mandatory).')
 
     def login(self):
         isdone = False
         while not isdone:
-            helper.printOut('Ok, let\'s login you. I need some data from you')
+            helper.printOut(helper.printColor("HEADER",'Ok, let\'s login you. I need some data from you'))
             email = input('Please, write your Email?\r\n')
+            email=email.lower()
             password = input('Please, write your Password?\r\n')
             if email == 'out' or password == 'out':
                 isdone = True
@@ -45,18 +47,18 @@ class Actions:
                 emailOk = self.checkEmail(email)
                 passOk = self.checkPassword(password)
                 if not emailOk:
-                    helper.printError(f'Your email: {email} is not a valid email.', 3.0)
+                    helper.printError(f'Your email: {email} is not a valid email.')
                 elif not passOk:
-                    helper.printError('You have to write a valid password (At least 6 chars with Letters and Numbers).', 3.0)
+                    helper.printError('You have to write a valid password (At least 6 chars with Letters and Numbers).')
                 else:
-                    userData = user.User('', email, password)
+                    userData = user.User(0, '', email, password)
                     isdone = userData.login()
                     if not isdone:
                         helper.printError('There is not any user with this email and password.', 6.0)
                     else:
                         quizAction.quizMenu(userData)
             else:
-               helper.printError('You have to file correctly your data or write out to exit.', 3.0)
+               helper.printError('You have to file correctly your data or write out to exit.')
     
     def checkEmail(self, email):
         import re
