@@ -1,7 +1,7 @@
 import tools.helpers as helpers
 import users.user as userModel
 import quiz.quiz as quizModel
-import datetime, json
+import datetime, json, random, time
 dateNowFull=datetime.datetime.now()
 dateNowShort=dateNowFull.strftime("%Y-%m-%d")
 helper = helpers.Helpers()
@@ -31,15 +31,19 @@ class Actions:
                     # Search a Quizz
                     self.quizzesSearch(user)
                     break
-                elif answer == 3:
+                elif answer == 3: # TODO
                     # List your Quizzes
                     self.quizzesList(user)
                     break
-                elif answer == 4:
+                elif answer == 4: # TODO
+                    # Delete your Quizzes
+                    #self.quizzesDelete(user)
+                    break
+                elif answer == 5: # TODO
                     # List your Grades
                     self.quizzesGrades(user)
                     break
-                elif answer == 5:
+                elif answer == 6:
                     # Exit
                     helper.printOut('Good Bye, I am here to server you!')
                     break
@@ -58,13 +62,13 @@ class Actions:
             if quizName.lower() == 'out':
                 isdone = True
                 self.quizzesMenu(user)
-            elif len(quizName)<=4 or not quizNameTrim.isalnum():
+            elif len(quizName)<=3 or not quizNameTrim.isalnum():
                 helper.printError('You have to write a valid title for your Quiz (At least more than 4 chars).')
             else:             
                 quizData = quizModel.Quiz('', user.id, quizName, 0, 0, '', dateNowShort)
                 result = quizData.searchOne()
                 if not len(result) == 0:
-                    helper.printOk('There is a Quiz which contains "'+quizName+'", Let`s go.')
+                    helper.printOk('There is a Quiz which contains "'+quizName+'", Let`s go.',1.0)
                     isdone = True 
                     quizData = quizModel.Quiz(result[0], result[1], result[2], result[3], result[4], result[5], result[6])
                     self.quizEdit(user, quizData)
@@ -144,8 +148,7 @@ class Actions:
             else:
                 if answer == 1:
                     # Do Quiz
-                    #self.quizDo(user,quiz)
-                    self.quizEdit(user,quiz)
+                    self.quizDo(user,quiz)
                     break
                 elif answer == 2:
                     # Edita Quiz Data
@@ -205,4 +208,60 @@ class Actions:
                 quiz.updateQuestions()
                 helper.printOk('Your Question is Added, continue adding or write out to exit.')
 
+    def quizDo(self, user, quiz):
+        # QuizData json String
+        if quiz.data == '':
+            self.quizEdit(user,quiz)
+            return
+        elif type(quiz.data) == str:
+            questions = json.loads(quiz.data)
+        else:
+            questions = quiz.data
 
+        # Start the test
+        questionsOK = 0
+        questionsKO = 0
+        failStr = ''
+        random.shuffle(questions)
+        questionsDone = 0
+        isDone = False
+        while not isDone:    
+            for question in questions:
+                # Important data
+                questionStr = question['question']
+                correctAnswer = question['correctAnswer']
+
+                # Final del test
+                questionsDone += 1
+                if questionsDone == quiz.questions + 1:
+                    isDone = True
+                    break
+                
+                # Respuesta según tipo test
+                if quiz.type_id == 2 :
+                    random.shuffle(question['respuestas'])
+                    #contador = 0
+                    #for respuesta in question['respuestas']:
+                    #    contador += 1
+                    #    #print(f'{bcolors.WARNING}{contador}){bcolors.ENDC} {respuesta}')
+                    #respuesta = input(f'{preguntasDone}.- {pregunta} [{bcolors.OKGREEN}Escribe el número de la respuesta correcta{bcolors.ENDC} ({bcolors.OKBLUE}Escribe out para salir{bcolors.ENDC})]\r\n{separador}\r\n')
+                else:
+                    helper.clean()
+                    print(helper.getSeparator())
+                    answer = input(helper.printColor("OKBLUE", str(questionsDone)+'.- '+questionStr+'?')+'\r\n'+helper.getSeparator()+'\r\n')
+                    #answer=input(str(questionsDone)+'.- '+questionStr+'?\r\n')
+
+                if correctAnswer.lower() == answer.lower():
+                    questionsOK += 1
+                else:
+                    failStr += "\n - "+questionStr+": "+helper.printColor('FAIL',answer)+" ---> "+helper.printColor('OKGREEN',correctAnswer)
+                    questionsKO += 1
+
+        helper.printOk(f'Your result is {questionsOK} of {quiz.questions}',0)
+        if not failStr == '':
+            print(helper.printColor("FAIL",f'You failed the next questions [{questionsKO}]')+':'+failStr)
+            print(helper.getSeparator())
+
+        time.sleep(5)
+        input('Press ENTER or any KEY to continue!')
+        self.quizEdit(user,quiz)
