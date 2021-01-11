@@ -27,6 +27,7 @@ class DataBase:
         connection = database[0]
         cursor = database[1]
         data.pop('id')
+
         # KEYS
         keys = ''
         for key in data.keys():
@@ -54,11 +55,16 @@ class DataBase:
         connection.close()
 
         return result
+    
+    def selectOne(self,table,select,where):
+        result = self.select(table,select,where+' LIMIT 1')
+        return result
 
     def update(self,table,update,where):
         database = self.connection()
         connection = database[0]
         cursor = database[1]
+        print('UPDATE '+table+' SET '+update+' WHERE '+where+'')
         cursor.execute('UPDATE '+table+' SET '+update+' WHERE '+where+'')
         connection.commit()
         connection.close()

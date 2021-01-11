@@ -1,13 +1,13 @@
 import tools.helpers as helpers
-import users.user as user
-import quiz.quiz as quiz
-import datetime
+import users.user as userModel
+import quiz.quiz as quizModel
+import datetime, json
 dateNowFull=datetime.datetime.now()
 dateNowShort=dateNowFull.strftime("%Y-%m-%d")
 helper = helpers.Helpers()
 
 class Actions:
-    def quizMenu(self, user):        
+    def quizzesMenu(self, user):        
         answer = ''
         while answer != 'out':
             helper.loggedOptions(user)
@@ -25,35 +25,70 @@ class Actions:
             else:
                 if answer == 1:
                     # Create a new Quiz
-                    self.quizNew(user)
+                    self.quizzesNew(user)
                     break
                 elif answer == 2:
-                    # Do a Quiz
-                    self.quizDo(user)
+                    # Search a Quizz
+                    self.quizzesSearch(user)
                     break
                 elif answer == 3:
-                    # Search a Quizz
-                    self.quizSearch(user)
+                    # List your Quizzes
+                    self.quizzesList(user)
                     break
                 elif answer == 4:
-                    # List your Quizzes
-                    self.quizList(user)
+                    # List your Grades
+                    self.quizzesGrades(user)
                     break
                 elif answer == 5:
-                    # List your Grades
-                    self.quizGrades(user)
-                    break
-                elif answer == 6:
                     # Exit
                     helper.printOut('Good Bye, I am here to server you!')
                     break
                 else:
                     helper.printError('You have to write a correct number from the options bellow')
 
-    def quizNew(self, user):
+    def quizzesNew(self, user):
+        self.quizzesData(user, '')
+
+    def quizzesSearch(self, user):
         isdone = False
         while not isdone:
-            helper.printOut(helper.printColor("HEADER",'Ok, let\'s create a new Quiz. I need some data from you'))
+            helper.printHeader('Ok, let\'s search into the Quizzes. I need some data from you')
+            quizName = input('Please, write the Title of the Quiz?\r\n')
+            quizNameTrim = quizName.replace(" ", "")
+            if quizName.lower() == 'out':
+                isdone = True
+                self.quizzesMenu(user)
+            elif len(quizName)<=4 or not quizNameTrim.isalnum():
+                helper.printError('You have to write a valid title for your Quiz (At least more than 4 chars).')
+            else:             
+                quizData = quizModel.Quiz('', user.id, quizName, 0, 0, '', dateNowShort)
+                result = quizData.searchOne()
+                if not len(result) == 0:
+                    helper.printOk('There is a Quiz which contains "'+quizName+'", Let`s go.')
+                    isdone = True 
+                    quizData = quizModel.Quiz(result[0], result[1], result[2], result[3], result[4], result[5], result[6])
+                    self.quizEdit(user, quizData)
+                else:
+                    helper.printError('There is not Quiz containing name: '+quizName)
+ 
+    def quizzesList(self, user):
+        helper.printOut(f'List Quiz! {user.name}')
+        self.quizzesMenu(user)
+
+    def quizzesGrades(self, user):
+        helper.printOut(f'List Grades! {user.name}')
+        self.quizzesMenu(user)
+    
+    def quizzesData(self, user, quiz=''):
+        isdone = False
+        while not isdone:
+            if quiz == '':
+                isNew = True
+                msg = 'Ok, let\'s create a new Quiz. I need some data from you'
+            else:
+                isNew = False
+                msg = 'Ok, let\'s edit your Quiz ['+quiz.name+']. I need some data from you'
+            helper.printHeader(msg)
             quizName = input('Please, write the Title of the Quiz?\r\n')
             quizNameTrim = quizName.replace(" ", "")
             quizTypeId = input(f'Please, write the Type of the Quiz?\r\n\t{helper.printColor("WARNING","1)")} Write the answer\r\n\t{helper.printColor("WARNING","2)")} Choose the correct answer\r\n')
@@ -69,7 +104,7 @@ class Actions:
             if quizName.lower() == 'out':
                 isdone = True
                 helper.printOut('Good Bye, I am here to server you!')
-                self.quizMenu(user)
+                self.quizzesMenu(user)
             elif quizName != '' and quizTypeId != 0 and quizQuestions != 0:
                 if quizTypeId != 1 and quizTypeId != 2:
                     helper.printError(f'You choose a wrong type of Quiz, try again writting 1 or 2.')
@@ -79,12 +114,17 @@ class Actions:
                     helper.printError(f'You have to write a valid title for your Quiz (At least more than 6 chars [{quizName}]).')
                 else:
                     isdone = True
-                    helper.printError(helper.printColor("OKGREEN",'Your Quiz is created, now you have to add questions and correct answers.'),2.0)
-                    quizData = quiz.Quiz('', user.id, quizName, quizTypeId, quizQuestions, '', dateNowShort)
-                    quizData.register()
+                    if isNew == True:
+                        helper.printOk('Your Quiz is created, now you have to add questions and correct answers.')
+                        quizData = quizModel.Quiz('', user.id, quizName, quizTypeId, quizQuestions, '', dateNowShort)
+                        quizData.register()
+                    else:
+                        helper.printOk('Your Quiz is edited.')
+                        quizData = quizModel.Quiz(quiz.id, user.id, quizName, quizTypeId, quizQuestions, quiz.data, quiz.date_creation)
+                        quizData.update()
                     self.quizEdit(user,quizData)
             else:
-               helper.printError('You have to file correctly your data or write out to exit (All fields are mandatory).')
+                helper.printError('You have to file correctly your data or write out to exit (All fields are mandatory).')
 
     def quizEdit(self, user, quiz):
         answer = ''
@@ -100,40 +140,52 @@ class Actions:
                 if not answer == 'out':
                     helper.printError('You have to write a number')
                 else:
-                    self.quizMenu(user)
+                    self.quizzesMenu(user)
             else:
                 if answer == 1:
-                    # Edita Quiz Data
-                    #self.quizEditData(user)
+                    # Do Quiz
+                    #self.quizDo(user,quiz)
+                    self.quizEdit(user,quiz)
                     break
                 elif answer == 2:
+                    # Edita Quiz Data
+                    self.quizEditData(user,quiz)
+                    break
+                elif answer == 3:
                     # Add Quiz Questions
                     self.quizAddQuestions(user, quiz)
                     break
-                elif answer == 3:
+                elif answer == 4: # TODO
                     # Edit Quiz Questions
                     #self.quizEditQuestions(user)
+                    self.quizEdit(user,quiz)
                     break
-                elif answer == 4:
+                elif answer == 5: # TODO
                     # Delete Quiz Questions
                     #self.quizDeleteQuestions(user)
+                    self.quizEdit(user,quiz)
                     break
-                elif answer == 5:
+                elif answer == 6:
                     # Exit
                     helper.printOut('Good Bye, I am here to server you!')
-                    self.quizMenu(user)
+                    self.quizzesMenu(user)
                     break
                 else:
                     helper.printError('You have to write a correct number from the options bellow')
     
+    def quizEditData(self, user, quiz):
+        self.quizzesData(user, quiz)
+
     def quizAddQuestions(self, user, quiz):
         isdone = False
         while not isdone:
             quizQuestion = ''
             quizAnswer = ''
-            helper.printOut(helper.printColor("HEADER",'Ok, let\'s create a new Question. I need some data from you'))
+            helper.printHeader('Ok, let\'s create a new Question. I need some data from you')
             if quiz.data == '':
                 quiz.data = []
+            elif type(quiz.data) == str:
+                quiz.data = json.loads(quiz.data)
             quizQuestion = input('Please, write the Question of the Quiz?\r\n')
             quizQuestionTrim = quizQuestion.replace(" ", "")
             if not quizQuestion.lower() == 'out':
@@ -151,28 +203,6 @@ class Actions:
             else:
                 quiz.data.append({'question':quizQuestion, 'correctAnswer':quizAnswer})
                 quiz.updateQuestions()
-                helper.printError(helper.printColor("OKGREEN",'Your Question is Added, continue adding or write out to exit.'),2.0)
+                helper.printOk('Your Question is Added, continue adding or write out to exit.')
 
-
-    def quizSearch(self, user):
-        isdone = False
-        while not isdone:
-            helper.printOut(helper.printColor("HEADER",'Ok, let\'s search into the Quizzes. I need some data from you'))
-            quizName = input('Please, write the Title of the Quiz?\r\n')
-            quizNameTrim = quizName.replace(" ", "")
-            if len(quizName)<=6 or not quizNameTrim.isalnum():
-                helper.printError('You have to write a valid title for your Quiz (At least more than 6 chars).')
-            else:
-                isdone = True
-                helper.printError('Your Quiz is created and you can give a try searching it.')
-                self.quizMenu(user)
- 
-    def quizList(self, user):
-        helper.printOut(f'List Quiz! {user.name}')
-
-    def quizGrades(self, user):
-        helper.printOut(f'List Grades! {user.name}')
-
-    def quizDo(self, user):
-        helper.printOut(f'Do Quiz! {user.name}')
 
