@@ -34,10 +34,22 @@ class Helpers:
         print(self.getSeparator())
         print(self.printColor("OKBLUE",msg))
         print(self.getSeparator())
+
+    def printHeader(self,msg):
+        self.clean()
+        print(self.getSeparator())
+        print(self.printColor("HEADER",msg))
+        print(self.getSeparator())
     
     def printError(self, msg, sleepTime=3):
         print(self.getSeparator())
-        print(msg)
+        print(self.printColor("FAIL",msg))
+        print(self.getSeparator())
+        time.sleep(sleepTime)
+
+    def printOk(self, msg, sleepTime=2):
+        print(self.getSeparator())
+        print(self.printColor("OKGREEN",msg))
         print(self.getSeparator())
         time.sleep(sleepTime)
     
@@ -56,11 +68,10 @@ class Helpers:
         options += '''        
         What do you want to do?
         '''+self.printColor("WARNING","1)")+''' Create a new Quiz
-        '''+self.printColor("WARNING","2)")+''' Do a Quiz
-        '''+self.printColor("WARNING","3)")+''' Edit a Quiz
-        '''+self.printColor("WARNING","4)")+''' List your Quizzes
-        '''+self.printColor("WARNING","5)")+''' View your grades
-        '''+self.printColor("WARNING","6)")+''' Exit
+        '''+self.printColor("WARNING","2)")+''' Search a Quiz
+        '''+self.printColor("WARNING","3)")+''' List your Quizzes
+        '''+self.printColor("WARNING","4)")+''' View your grades
+        '''+self.printColor("WARNING","5)")+''' Exit
         '''
         self.printOut(options)
 
@@ -68,10 +79,11 @@ class Helpers:
         options = f'{self.printColor("HEADER","It is the time to edit your Quiz:")} ({self.printColor("UNDERLINE", quiz.name)} - {self.printColor("UNDERLINE", str(quiz.id))})\r\n{self.getSeparator()}\r\n'
         options += '''        
         What do you want to do?
-        '''+self.printColor("WARNING","1)")+''' Edit data of your Quiz
-        '''+self.printColor("WARNING","2)")+''' Add new Questions
-        '''+self.printColor("WARNING","3)")+''' Edit Questions
-        '''+self.printColor("WARNING","4)")+''' Delete Questions
-        '''+self.printColor("WARNING","5)")+''' Exit
+        '''+self.printColor("WARNING","1)")+''' Do the Quiz
+        '''+self.printColor("WARNING","2)")+''' Edit data of your Quiz
+        '''+self.printColor("WARNING","3)")+''' Add new Questions
+        '''+self.printColor("WARNING","4)")+''' Edit Questions
+        '''+self.printColor("WARNING","5)")+''' Delete Questions
+        '''+self.printColor("WARNING","6)")+''' Exit
         '''
         self.printOut(options)

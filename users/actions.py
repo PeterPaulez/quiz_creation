@@ -29,7 +29,7 @@ class Actions:
                     isdone = True
                     userData = user.User('', name, email, password)
                     userData.register()
-                    quizAction.quizMenu(userData)
+                    quizAction.quizzesMenu(userData)
             else:
                helper.printError('You have to file correctly your data or write out to exit (All fields are mandatory).')
 
@@ -38,8 +38,14 @@ class Actions:
         while not isdone:
             helper.printOut(helper.printColor("HEADER",'Ok, let\'s login you. I need some data from you'))
             email = input('Please, write your Email?\r\n')
-            email=email.lower()
+            email = email.lower()
             password = input('Please, write your Password?\r\n')
+            # TODO remove it
+            if email == 'p' and password == 'p':
+                email = 'pedro@pedro.com'
+                password = 'aaaa1111'
+                print('hello')
+            # TODO remove it
             if email == 'out' or password == 'out':
                 isdone = True
                 helper.printOut('Good Bye, I am here to server you!')
@@ -56,7 +62,7 @@ class Actions:
                     if not isdone:
                         helper.printError('There is not any user with this email and password.', 6.0)
                     else:
-                        quizAction.quizMenu(userData)
+                        quizAction.quizzesMenu(userData)
             else:
                helper.printError('You have to file correctly your data or write out to exit.')
     
