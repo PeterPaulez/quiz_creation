@@ -11,16 +11,17 @@ class User:
     def register(self):
         database = sql.DataBase()
         self.password = self.encryptPass(self.password)
-        database.insert('users',self)
+        self.id = database.insert('users',self.__dict__)
         return True
 
     def login(self):
         database = sql.DataBase()
         self.password = self.encryptPass(self.password)
-        result = database.select('users','name,email,password','email="'+self.email+'" AND password="'+self.password+'"')
+        result = database.select('users','id,name,email,password','email="'+self.email+'" AND password="'+self.password+'"')
         try:
-            if result[1] == self.email:
-                self.name = result[0]
+            if result[2] == self.email:
+                self.id = result[0]
+                self.name = result[1]
                 return True
         except:
             return False

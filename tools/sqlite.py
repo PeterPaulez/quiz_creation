@@ -26,6 +26,7 @@ class DataBase:
         database = self.connection()
         connection = database[0]
         cursor = database[1]
+        data.pop('id')
         # KEYS
         keys = ''
         for key in data.keys():

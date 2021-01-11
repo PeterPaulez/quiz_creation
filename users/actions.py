@@ -27,7 +27,7 @@ class Actions:
                     helper.printError('You have to write a valid name (At least more than 2 chars).')
                 else:
                     isdone = True
-                    userData = user.User(0, name, email, password)
+                    userData = user.User('', name, email, password)
                     userData.register()
                     quizAction.quizMenu(userData)
             else:
