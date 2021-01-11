@@ -32,7 +32,7 @@ class Helpers:
     def printOut(self,msg):
         self.clean()
         print(self.getSeparator())
-        print(msg)
+        print(self.printColor("OKBLUE",msg))
         print(self.getSeparator())
     
     def printError(self, msg, sleepTime=3):

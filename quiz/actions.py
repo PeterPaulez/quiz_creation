@@ -65,7 +65,8 @@ class Actions:
                 quizTypeId=0
                 quizQuestions=0
 
-            if quizName == 'out':
+            # Decide what to do after INPUTs
+            if quizName.lower() == 'out':
                 isdone = True
                 helper.printOut('Good Bye, I am here to server you!')
                 self.quizMenu(user)
@@ -78,7 +79,7 @@ class Actions:
                     helper.printError(f'You have to write a valid title for your Quiz (At least more than 6 chars [{quizName}]).')
                 else:
                     isdone = True
-                    helper.printError('Your Quiz is created, now you have to add questions and correct answers.',2.0)
+                    helper.printError(helper.printColor("OKGREEN",'Your Quiz is created, now you have to add questions and correct answers.'),2.0)
                     quizData = quiz.Quiz('', user.id, quizName, quizTypeId, quizQuestions, '', dateNowShort)
                     quizData.register()
                     self.quizEdit(user,quizData)
@@ -127,29 +128,31 @@ class Actions:
     
     def quizAddQuestions(self, user, quiz):
         isdone = False
-        contador = 0
         while not isdone:
-            contador += 1
+            quizQuestion = ''
+            quizAnswer = ''
             helper.printOut(helper.printColor("HEADER",'Ok, let\'s create a new Question. I need some data from you'))
             if quiz.data == '':
                 quiz.data = []
             quizQuestion = input('Please, write the Question of the Quiz?\r\n')
             quizQuestionTrim = quizQuestion.replace(" ", "")
-            quizAnswer = input('Please, write the correct Answer of the Quiz?\r\n')
-            quizAnswerTrim = quizAnswer.replace(" ", "")
-            if len(quizQuestion)<=6 or not quizQuestionTrim.isalnum():
+            if not quizQuestion.lower() == 'out':
+                quizAnswer = input('Please, write the correct Answer of the Quiz?\r\n')
+                quizAnswerTrim = quizAnswer.replace(" ", "")
+            
+            # Decide what to do after INPUTs
+            if quizQuestion.lower() == 'out' or quizAnswer.lower() == 'out':
+                isdone = True
+                self.quizEdit(user,quiz)
+            elif len(quizQuestion)<=6 or not quizQuestionTrim.isalnum():
                 helper.printError(f'You have to write a valid Question (At least more than 6 chars [{quizQuestion}]).')
             elif len(quizAnswer)<=1 or not quizAnswerTrim.isalnum():
                 helper.printError(f'You have to write a valid Answer (At least more than 1 char [{quizAnswer}]).')
             else:
                 quiz.data.append({'question':quizQuestion, 'correctAnswer':quizAnswer})
                 quiz.updateQuestions()
-                helper.printError('Your Question is Added, continue adding or write out to exit.',2.0)
+                helper.printError(helper.printColor("OKGREEN",'Your Question is Added, continue adding or write out to exit.'),2.0)
 
-            if quizQuestion.lower() == 'out':
-                isdone = True
-                helper.printError(f'Your new Questions are added to your Quiz.')
-                self.quizMenu(user)
 
     def quizSearch(self, user):
         isdone = False
