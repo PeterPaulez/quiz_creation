@@ -52,7 +52,7 @@ class Helpers:
         self.printOut(options)
 
     def loggedOptions(self, user):
-        options = f'{self.printColor("HEADER","Welcome to Quiz Creator APP")} ({self.printColor("UNDERLINE", user.name)})\r\n{self.getSeparator()}\r\n'
+        options = f'{self.printColor("HEADER","Welcome to Quiz Creator APP")} ({self.printColor("UNDERLINE", user.name)} - {self.printColor("UNDERLINE", str(user.id))})\r\n{self.getSeparator()}\r\n'
         options += '''        
         What do you want to do?
         '''+self.printColor("WARNING","1)")+''' Create a new Quiz
@@ -65,7 +65,7 @@ class Helpers:
         self.printOut(options)
 
     def quizOptions(self, quiz):
-        options = f'{self.printColor("HEADER","It is the time to edit your Quiz:")} ({self.printColor("UNDERLINE", quiz.name)})\r\n{self.getSeparator()}\r\n'
+        options = f'{self.printColor("HEADER","It is the time to edit your Quiz:")} ({self.printColor("UNDERLINE", quiz.name)} - {self.printColor("UNDERLINE", str(quiz.id))})\r\n{self.getSeparator()}\r\n'
         options += '''        
         What do you want to do?
         '''+self.printColor("WARNING","1)")+''' Edit data of your Quiz
