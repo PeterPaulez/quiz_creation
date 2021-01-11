@@ -64,7 +64,6 @@ class DataBase:
         database = self.connection()
         connection = database[0]
         cursor = database[1]
-        print('UPDATE '+table+' SET '+update+' WHERE '+where+'')
         cursor.execute('UPDATE '+table+' SET '+update+' WHERE '+where+'')
         connection.commit()
         connection.close()

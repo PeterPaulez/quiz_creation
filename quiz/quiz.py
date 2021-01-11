@@ -19,6 +19,8 @@ class Quiz:
     def update(self):
         database = sql.DataBase()
         quizId = self.id
+        if type(self.data) == dict:
+            self.data = json.dumps(self.data)
         data = self.__dict__
         data.pop('id')
         updateStr = ', '.join(['{0}=\'{1}\''.format(key, value) for (key, value) in data.items()])
@@ -38,4 +40,6 @@ class Quiz:
     def searchOne(self):
         database = sql.DataBase()
         result = database.selectOne('quizzes', self.quizKeys(), 'name LIKE "%'+self.name+'%" ORDER BY user_id='+str(self.user_id)+' DESC')
+        if result == None:
+            result = []
         return result

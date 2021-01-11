@@ -47,7 +47,7 @@ class Helpers:
         print(self.getSeparator())
         time.sleep(sleepTime)
 
-    def printOk(self, msg, sleepTime=2):
+    def printOk(self, msg, sleepTime=1):
         print(self.getSeparator())
         print(self.printColor("OKGREEN",msg))
         print(self.getSeparator())
@@ -70,8 +70,9 @@ class Helpers:
         '''+self.printColor("WARNING","1)")+''' Create a new Quiz
         '''+self.printColor("WARNING","2)")+''' Search a Quiz
         '''+self.printColor("WARNING","3)")+''' List your Quizzes
-        '''+self.printColor("WARNING","4)")+''' View your grades
-        '''+self.printColor("WARNING","5)")+''' Exit
+        '''+self.printColor("WARNING","4)")+''' Delete your Quizzes
+        '''+self.printColor("WARNING","5)")+''' View your grades
+        '''+self.printColor("WARNING","6)")+''' Exit
         '''
         self.printOut(options)
 
