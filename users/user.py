@@ -17,7 +17,7 @@ class User:
     def login(self):
         database = sql.DataBase()
         self.password = self.encryptPass(self.password)
-        result = database.select('users','id,name,email,password','email="'+self.email+'" AND password="'+self.password+'"')
+        result = database.selectOne('users','id,name,email,password','email="'+self.email+'" AND password="'+self.password+'"')
         try:
             if result[2] == self.email:
                 self.id = result[0]

@@ -51,13 +51,19 @@ class DataBase:
         connection = database[0]
         cursor = database[1]
         cursor.execute('SELECT '+select+' FROM '+table+' WHERE '+where+'')
-        result=cursor.fetchone()
+        result=cursor.fetchall()
         connection.close()
 
         return result
     
     def selectOne(self,table,select,where):
-        result = self.select(table,select,where+' LIMIT 1')
+        database = self.connection()
+        connection = database[0]
+        cursor = database[1]
+        cursor.execute('SELECT '+select+' FROM '+table+' WHERE '+where+' LIMIT 1')
+        result=cursor.fetchone()
+        connection.close()
+
         return result
 
     def update(self,table,update,where):
