@@ -85,6 +85,6 @@ class Helpers:
         '''+self.printColor("WARNING","3)")+''' Add new Questions
         '''+self.printColor("WARNING","4)")+''' Edit Questions
         '''+self.printColor("WARNING","5)")+''' Delete Questions
-        '''+self.printColor("WARNING","6)")+''' Exit
+        '''+self.printColor("WARNING","6)")+''' Back
         '''
         self.printOut(options)

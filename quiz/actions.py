@@ -31,7 +31,7 @@ class Actions:
                     # Search a Quizz
                     self.quizzesSearch(user)
                     break
-                elif answer == 3: # TODO
+                elif answer == 3:
                     # List your Quizzes
                     self.quizzesList(user)
                     break
@@ -65,8 +65,8 @@ class Actions:
             elif len(quizName)<=3 or not quizNameTrim.isalnum():
                 helper.printError('You have to write a valid title for your Quiz (At least more than 4 chars).')
             else:             
-                quizData = quizModel.Quiz('', user.id, quizName, 0, 0, '', dateNowShort)
-                result = quizData.searchOne()
+                quizzes = quizModel.Quizzes(user.id)
+                result = quizzes.searchOnebyName(quizName)
                 if not len(result) == 0:
                     helper.printOk('There is a Quiz which contains "'+quizName+'", Let`s go.',1.0)
                     isdone = True 
@@ -76,8 +76,35 @@ class Actions:
                     helper.printError('There is not Quiz containing name: '+quizName)
  
     def quizzesList(self, user):
-        helper.printOut(f'List Quiz! {user.name}')
-        self.quizzesMenu(user)
+        isdone = False
+        while not isdone:
+            options = f'{helper.printColor("HEADER","List of your Quizzes:")} ({helper.printColor("UNDERLINE", user.name)})'
+            helper.printOut(options)
+            quizzes = quizModel.Quizzes(user.id)
+            result = quizzes.searchAll()
+            for item in result:
+                print(f'{helper.printColor("WARNING",f"{item.id})")} {item.name}')
+            print(helper.getSeparator())
+            answer = input('Please, write the ID of the Quiz to edit it:\r\n')
+            try:
+                answer = int(answer)
+            except:
+                pass
+            
+            if not type(answer) == int:
+                if not answer == 'out':
+                    helper.printError('You have to write a number')
+                else:
+                    isdone = True 
+                    self.quizzesMenu(user)
+            else:
+                result = quizzes.searchOnebyId(answer)
+                if not len(result) == 0:
+                    isdone = True 
+                    quizData = quizModel.Quiz(result[0], result[1], result[2], result[3], result[4], result[5], result[6])
+                    self.quizEdit(user, quizData)
+                else:
+                    helper.printError('There is not Quiz having ID: '+str(answer))
 
     def quizzesGrades(self, user):
         helper.printOut(f'List Grades! {user.name}')
@@ -134,7 +161,7 @@ class Actions:
         answer = ''
         while answer != 'out':
             helper.quizOptions(quiz)
-            answer=input('Give me the number or write out to exit?\r\n')
+            answer=input('Give me the number or write out to Back?\r\n')
             try:
                 answer=int(answer)
             except:
@@ -169,7 +196,7 @@ class Actions:
                     self.quizEdit(user,quiz)
                     break
                 elif answer == 6:
-                    # Exit
+                    # Back
                     helper.printOut('Good Bye, I am here to server you!')
                     self.quizzesMenu(user)
                     break

@@ -44,7 +44,6 @@ class Actions:
             if email == 'p' and password == 'p':
                 email = 'pedro@pedro.com'
                 password = 'aaaa1111'
-                print('hello')
             # TODO remove it
             if email == 'out' or password == 'out':
                 isdone = True

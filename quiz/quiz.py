@@ -1,6 +1,40 @@
 import tools.sqlite as sql
 import json
 
+class Quizzes:
+    def __init__(self, user_id):
+        self.user_id = user_id
+    
+    def searchAll(self):
+        quiz = Quiz('',self.user_id,'','','','','')
+        database = sql.DataBase()
+        result = database.select('quizzes', quiz.quizKeys(), 'user_id='+str(self.user_id))
+        if result == None:
+            quizzes = [] 
+        else:
+            quizzes = []
+            for item in result:
+                quiz = Quiz(item[0], item[1], item[2], item[3], item[4], item[5], item[6])
+                quizzes.append(quiz)
+
+        return quizzes
+        
+    def searchOnebyName(self, searchStr):
+        quiz = Quiz('',self.user_id,'','','','','')
+        database = sql.DataBase()
+        result = database.selectOne('quizzes', quiz.quizKeys(), 'name LIKE "%'+searchStr+'%" ORDER BY user_id='+str(self.user_id)+' DESC')
+        if result == None:
+            result = []
+        return result
+
+    def searchOnebyId(self, searchId):
+        quiz = Quiz('',self.user_id,'','','','','')
+        database = sql.DataBase()
+        result = database.selectOne('quizzes', quiz.quizKeys(), 'id='+str(searchId)+' AND user_id='+str(self.user_id))
+        if result == None:
+            result = []
+        return result
+
 class Quiz:
     def __init__(self, id, user_id, name, type_id, questions, data, date_creation):
         self.id = id
@@ -36,10 +70,3 @@ class Quiz:
         keys = self.__dict__.keys()
         separator = ','
         return separator.join(keys)
-
-    def searchOne(self):
-        database = sql.DataBase()
-        result = database.selectOne('quizzes', self.quizKeys(), 'name LIKE "%'+self.name+'%" ORDER BY user_id='+str(self.user_id)+' DESC')
-        if result == None:
-            result = []
-        return result
