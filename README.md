@@ -6,14 +6,15 @@
 - Check your quizzes results
 - Edit your quiz and see all results
 
-# Welcome to Quiz Creator APP - Guest
-        
+# Welcome to Quiz Creator APP        
+- Guest Menu
+
         What do you want to do?
         1) Register
         2) Login
         3) Exit
         
-# Welcome to Quiz Creator APP - Logged
+# Welcome to Quiz Creator APP
 - Name: Pedro
 - Email: pedro@pedro.com
         
