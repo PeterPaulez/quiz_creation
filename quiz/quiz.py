@@ -70,3 +70,9 @@ class Quiz:
         keys = self.__dict__.keys()
         separator = ','
         return separator.join(keys)
+
+    def getTotalQuestions(self):
+        if not type(self.data) == dict:
+            self.data = json.loads(self.data)
+        return len(self.data)
+
