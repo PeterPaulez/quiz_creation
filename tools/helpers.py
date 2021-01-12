@@ -77,7 +77,7 @@ class Helpers:
         self.printOut(options)
 
     def quizOptions(self, quiz):
-        options = f'{self.printColor("HEADER","It is the time to edit your Quiz:")}\r\nName: {self.printColor("OKBLUE", quiz.name)}\r\nExam Questions: {self.printColor("OKBLUE", str(quiz.questions))}\r\nTotal Questions: {self.printColor("OKBLUE", str(quiz.getTotalQuestions()))}\r\n{self.getSeparator()}\r\n'
+        options = f'{self.printColor("HEADER","It is the time to edit your Quiz:")}\r\nName: {self.printColor("OKBLUE", quiz.name)}\r\nExam Questions: {self.printColor("OKBLUE", str(quiz.questions))}\r\nTotal Questions: {self.printColor("OKBLUE", str(quiz.getTotalQuestions()))}\r\nOwner: {self.printColor("OKBLUE", str(quiz.getUserName()))}\r\n{self.getSeparator()}\r\n'
         options += '''        
         What do you want to do?
         '''+self.printColor("WARNING","1)")+''' Do the Quiz

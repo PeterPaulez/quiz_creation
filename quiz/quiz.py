@@ -78,3 +78,8 @@ class Quiz:
             if not type(self.data) == list:
                 self.data = json.loads(self.data)
             return len(self.data)
+
+    def getUserName(self):
+        database = sql.DataBase()
+        result = database.selectOne('users','name','id='+str(self.user_id))
+        return result[0]

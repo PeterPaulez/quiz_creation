@@ -151,7 +151,7 @@ class Actions:
                         quizData.register()
                     else:
                         helper.printOk('Your Quiz is edited.')
-                        quizData = quizModel.Quiz(quiz.id, user.id, quizName, quizTypeId, quizQuestions, quiz.data, quiz.date_creation)
+                        quizData = quizModel.Quiz(quiz.id, quiz.user_id, quizName, quiz.type_id, quizQuestions, quiz.data, quiz.date_creation)
                         quizData.update()
                     self.quizEdit(user,quizData)
             else:
@@ -204,36 +204,44 @@ class Actions:
                     helper.printError('You have to write a correct number from the options bellow')
     
     def quizEditData(self, user, quiz):
-        self.quizzesData(user, quiz)
+        if not quiz.user_id == user.id:
+            helper.printError('You are not the owner of this QUIZ, so there is not possible to edit it')
+            self.quizEdit(user, quiz)
+        else:
+            self.quizzesData(user, quiz)
 
     def quizAddQuestions(self, user, quiz):
-        isdone = False
-        while not isdone:
-            quizQuestion = ''
-            quizAnswer = ''
-            helper.printHeader('Ok, let\'s create a new Question. I need some data from you')
-            if quiz.data == '':
-                quiz.data = []
-            elif type(quiz.data) == str:
-                quiz.data = json.loads(quiz.data)
-            quizQuestion = input('Please, write the Question of the Quiz?\r\n')
-            quizQuestionTrim = quizQuestion.replace(" ", "")
-            if not quizQuestion.lower() == 'out':
-                quizAnswer = input('Please, write the correct Answer of the Quiz?\r\n')
-                quizAnswerTrim = quizAnswer.replace(" ", "")
-            
-            # Decide what to do after INPUTs
-            if quizQuestion.lower() == 'out' or quizAnswer.lower() == 'out':
-                isdone = True
-                self.quizEdit(user,quiz)
-            elif len(quizQuestion)<=6 or not quizQuestionTrim.isalnum():
-                helper.printError(f'You have to write a valid Question (At least more than 6 chars [{quizQuestion}]).')
-            elif len(quizAnswer)<=1 or not quizAnswerTrim.isalnum():
-                helper.printError(f'You have to write a valid Answer (At least more than 1 char [{quizAnswer}]).')
-            else:
-                quiz.data.append({'question':quizQuestion, 'correctAnswer':quizAnswer})
-                quiz.updateQuestions()
-                helper.printOk('Your Question is Added, continue adding or write out to exit.')
+        if not quiz.user_id == user.id:
+            helper.printError('You are not the owner of this QUIZ, so there is not possible to edit it')
+            self.quizEdit(user, quiz)
+        else:
+            isdone = False
+            while not isdone:
+                quizQuestion = ''
+                quizAnswer = ''
+                helper.printHeader('Ok, let\'s create a new Question. I need some data from you')
+                if quiz.data == '':
+                    quiz.data = []
+                elif type(quiz.data) == str:
+                    quiz.data = json.loads(quiz.data)
+                quizQuestion = input('- Please, write the Question of the Quiz?\r\n')
+                quizQuestionTrim = quizQuestion.replace(" ", "")
+                if not quizQuestion.lower() == 'out':
+                    quizAnswer = input('- Please, write the correct Answer of the Quiz?\r\n')
+                    quizAnswerTrim = quizAnswer.replace(" ", "")
+                
+                # Decide what to do after INPUTs
+                if quizQuestion.lower() == 'out' or quizAnswer.lower() == 'out':
+                    isdone = True
+                    self.quizEdit(user,quiz)
+                elif len(quizQuestion)<=6 or not quizQuestionTrim.isalnum():
+                    helper.printError(f'You have to write a valid Question (At least more than 6 chars [{quizQuestion}]).')
+                elif len(quizAnswer)<=1 or not quizAnswerTrim.isalnum():
+                    helper.printError(f'You have to write a valid Answer (At least more than 1 char [{quizAnswer}]).')
+                else:
+                    quiz.data.append({'question':quizQuestion, 'correctAnswer':quizAnswer})
+                    quiz.updateQuestions()
+                    helper.printOk('Your Question is Added, continue adding or write out to exit.',0.5)
 
     def quizDo(self, user, quiz):
         # QuizData json String
@@ -284,6 +292,7 @@ class Actions:
                     failStr += "\n - "+questionStr+": "+helper.printColor('FAIL',answer)+" ---> "+helper.printColor('OKGREEN',correctAnswer)
                     questionsKO += 1
 
+        helper.clean()
         helper.printOk(f'Your result is {questionsOK} of {quiz.questions}',0)
         if not failStr == '':
             print(helper.printColor("FAIL",f'You failed the next questions [{questionsKO}]')+':'+failStr)
