@@ -58,11 +58,10 @@ class Actions:
         while not isdone:
             helper.printHeader('Ok, let\'s search into the Quizzes. I need some data from you')
             quizName = input('Please, write the Title of the Quiz?\r\n')
-            quizNameTrim = quizName.replace(" ", "")
             if quizName.lower() == 'out':
                 isdone = True
                 self.quizzesMenu(user)
-            elif len(quizName)<=3 or not quizNameTrim.isalnum():
+            elif not helper.stringOk(quizName, 3):
                 helper.printError('You have to write a valid title for your Quiz (At least more than 4 chars).')
             else:             
                 quizzes = quizModel.Quizzes(user.id)
@@ -121,7 +120,6 @@ class Actions:
                 msg = 'Ok, let\'s edit your Quiz ['+quiz.name+']. I need some data from you'
             helper.printHeader(msg)
             quizName = input('Please, write the Title of the Quiz?\r\n')
-            quizNameTrim = quizName.replace(" ", "")
             quizTypeId = input(f'Please, write the Type of the Quiz?\r\n\t{helper.printColor("WARNING","1)")} Write the answer\r\n\t{helper.printColor("WARNING","2)")} Choose the correct answer\r\n')
             quizQuestions = input('Please, write the Number of random Questions of the Quiz 5-20?\r\n')
             try:
@@ -141,7 +139,7 @@ class Actions:
                     helper.printError(f'You choose a wrong type of Quiz, try again writting 1 or 2.')
                 elif quizQuestions < 5 or quizQuestions > 20:
                     helper.printError(f'You choose a wrong number of random Questions, try again writting a number range from 5 to 20.')
-                elif len(quizName)<=6 or not quizNameTrim.isalnum():
+                elif not helper.stringOk(quizName, 6):
                     helper.printError(f'You have to write a valid title for your Quiz (At least more than 6 chars [{quizName}]).')
                 else:
                     isdone = True
@@ -217,31 +215,51 @@ class Actions:
         else:
             isdone = False
             while not isdone:
+                quizInputs = []
                 quizQuestion = ''
                 quizAnswer = ''
                 helper.printHeader('Ok, let\'s create a new Question. I need some data from you')
+                quizQuestion = input('- Please, write the Question of the Quiz?\r\n')
+                if not quizQuestion.lower() == 'out' and "FILE:" in quizQuestion:
+                    quizQuestionstr = quizQuestion.split(':')
+                    fileName = './data/'+quizQuestionstr[1]
+                    from csv import reader
+                    with open(fileName, 'r') as content:
+                        csv_reader = reader(content)
+                        for line in csv_reader:
+                            quizQuestionLine = line[0]
+                            quizAnswerLine = line[1]
+                            print(quizQuestionLine+' => '+quizAnswerLine)
+                            quizInputs.append({'question':quizQuestionLine, 'answer':quizAnswerLine})
+                    isdone = True
+                    self.quizAddQuestionsDecide(user, quiz, quizInputs)
+                    self.quizEdit(user,quiz)
+                else:
+                    if not quizQuestion.lower() == 'out':
+                        quizAnswer = input('- Please, write the correct Answer of the Quiz?\r\n')
+                        quizInputs.append({'question':quizQuestion, 'answer':quizAnswer})
+                        self.quizAddQuestionsDecide(user, quiz, quizInputs)
+                    # Decide what to do after INPUTs
+                    if quizQuestion.lower() == 'out' or quizAnswer.lower() == 'out':
+                        isdone = True
+                        self.quizEdit(user,quiz)
+
+    def quizAddQuestionsDecide(self, user, quiz, quizInputs):
+        for quizInput in quizInputs:
+            quizQuestion = quizInput['question']
+            quizAnswer = quizInput['answer']
+            if not helper.stringOk(quizQuestion, 6):
+                helper.printError(f'You have to write a valid Question (At least more than 6 chars [{quizQuestion}]).')
+            elif not helper.stringOk(quizAnswer, 1):
+                helper.printError(f'You have to write a valid Answer (At least more than 1 char [{quizAnswer}]).')
+            else:
                 if quiz.data == '':
                     quiz.data = []
                 elif type(quiz.data) == str:
                     quiz.data = json.loads(quiz.data)
-                quizQuestion = input('- Please, write the Question of the Quiz?\r\n')
-                quizQuestionTrim = quizQuestion.replace(" ", "")
-                if not quizQuestion.lower() == 'out':
-                    quizAnswer = input('- Please, write the correct Answer of the Quiz?\r\n')
-                    quizAnswerTrim = quizAnswer.replace(" ", "")
-                
-                # Decide what to do after INPUTs
-                if quizQuestion.lower() == 'out' or quizAnswer.lower() == 'out':
-                    isdone = True
-                    self.quizEdit(user,quiz)
-                elif len(quizQuestion)<=6 or not quizQuestionTrim.isalnum():
-                    helper.printError(f'You have to write a valid Question (At least more than 6 chars [{quizQuestion}]).')
-                elif len(quizAnswer)<=1 or not quizAnswerTrim.isalnum():
-                    helper.printError(f'You have to write a valid Answer (At least more than 1 char [{quizAnswer}]).')
-                else:
-                    quiz.data.append({'question':quizQuestion, 'correctAnswer':quizAnswer})
-                    quiz.updateQuestions()
-                    helper.printOk('Your Question is Added, continue adding or write out to exit.',0.5)
+                quiz.data.append({'question':quizQuestion, 'correctAnswer':quizAnswer})
+                quiz.updateQuestions()
+                helper.printOk('Your Question is Added, continue adding or write out to exit.',0.5)
 
     def quizDo(self, user, quiz):
         # QuizData json String

@@ -57,7 +57,7 @@ class Quiz:
             self.data = json.dumps(self.data)
         data = self.__dict__
         data.pop('id')
-        updateStr = ', '.join(['{0}=\'{1}\''.format(key, value) for (key, value) in data.items()])
+        updateStr = ', '.join(['{0}="{1}"'.format(key, value) for (key, value) in data.items()])
         self.id = database.update('quizzes', updateStr, 'id='+str(quizId))
         return True
 

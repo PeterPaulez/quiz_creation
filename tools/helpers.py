@@ -1,4 +1,4 @@
-import os, time
+import os, time, re
 
 class Helpers:
     def getSeparator(self):
@@ -28,6 +28,13 @@ class Helpers:
             return '\033[4m'+texto+'\033[0m'
         else:
             return ''
+
+    def stringOk(self,stringText,stringLen):
+        stringTextTrim = stringText.replace(" ", "")
+        if len(stringTextTrim) >= stringLen and bool(re.search(r'[A-Za-z0-9]', stringText)):
+            return True
+        else:
+            return False
 
     def printOut(self,msg):
         self.clean()
