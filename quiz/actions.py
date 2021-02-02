@@ -237,7 +237,7 @@ class Actions:
                 else:
                     if not quizQuestion.lower() == 'out':
                         quizAnswer = input('- Please, write the correct Answer of the Quiz?\r\n')
-                        quizInputs.append({'question':quizQuestion, 'answer':quizAnswer})
+                        quizInputs.append({"question":quizQuestion, "answer":quizAnswer})
                         self.quizAddQuestionsDecide(user, quiz, quizInputs)
                     # Decide what to do after INPUTs
                     if quizQuestion.lower() == 'out' or quizAnswer.lower() == 'out':
@@ -257,7 +257,7 @@ class Actions:
                     quiz.data = []
                 elif type(quiz.data) == str:
                     quiz.data = json.loads(quiz.data)
-                quiz.data.append({'question':quizQuestion, 'correctAnswer':quizAnswer})
+                quiz.data.append({"question":quizQuestion, "correctAnswer":quizAnswer})
                 quiz.updateQuestions()
                 helper.printOk('Your Question is Added, continue adding or write out to exit.',0.5)
 
