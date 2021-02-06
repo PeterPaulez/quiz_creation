@@ -235,16 +235,21 @@ class Actions:
                 if not quizQuestion.lower() == 'out' and "FILE:" in quizQuestion:
                     quizQuestionstr = quizQuestion.split(':')
                     fileName = './data/'+quizQuestionstr[1]
-                    from csv import reader
-                    with open(fileName, 'r', encoding='utf-8') as content:
-                        csv_reader = reader(content)
-                        for line in csv_reader:
-                            quizQuestionLine = line[0]
-                            quizAnswerLine = line[1]
-                            print(quizQuestionLine+' => '+quizAnswerLine)
-                            quizInputs.append({'question':quizQuestionLine, 'answer':quizAnswerLine})
+                    import os.path
+                    if os.path.isfile(fileName):
+                        from csv import reader
+                        with open(fileName, 'r', encoding='utf-8') as content:
+                            csv_reader = reader(content)
+                            for line in csv_reader:
+                                quizQuestionLine = line[0]
+                                quizAnswerLine = line[1]
+                                print(quizQuestionLine+' => '+quizAnswerLine)
+                                quizInputs.append({'question':quizQuestionLine, 'answer':quizAnswerLine})
+                        self.quizAddQuestionsDecide(user, quiz, quizInputs)
+                    else:
+                        helper.printError(f'There is not file on this path: {fileName}')
+                    
                     isdone = True
-                    self.quizAddQuestionsDecide(user, quiz, quizInputs)
                     self.quizEdit(user,quiz)
                 else:
                     if not quizQuestion.lower() == 'out':
