@@ -1,9 +1,11 @@
 import tools.helpers as helpers
 import users.user as userModel
 import quiz.quiz as quizModel
+import users.grade as gradeModel
 import datetime, json, random, time
 dateNowFull=datetime.datetime.now()
 dateNowShort=dateNowFull.strftime("%Y-%m-%d")
+dateNowShortTime=dateNowFull.strftime("%Y-%m-%d %H:%m:%S")
 helper = helpers.Helpers()
 
 class Actions:
@@ -49,6 +51,21 @@ class Actions:
                     break
                 else:
                     helper.printError('You have to write a correct number from the options bellow')
+
+    def quizzesGrades(self, user):
+        options = f'{helper.printColor("HEADER","List of your Grades:")} ({helper.printColor("UNDERLINE", user.name)})'
+        helper.printOut(options)
+        grades = gradeModel.Grades(user.id)
+        result = grades.searchAll()
+        for item in result:
+            questionsOK = str(item.getDataQuestionsOK())
+            questions = str(item.getDataQuestions())
+            print(f'{helper.printColor("WARNING",f"{item.date_creation} :: ")}Result: {questionsOK} of {questions}')
+            print(f"{item.getDataQuizName()} [{item.quiz_id}]")
+            print(helper.getSeparator())
+        
+        input('Press ENTER or any KEY to continue!')
+        self.quizzesMenu(user)
 
     def quizzesNew(self, user):
         self.quizzesData(user, '')
@@ -104,10 +121,6 @@ class Actions:
                     self.quizEdit(user, quizData)
                 else:
                     helper.printError('There is not Quiz having ID: '+str(answer))
-
-    def quizzesGrades(self, user):
-        helper.printOut(f'List Grades! {user.name}')
-        self.quizzesMenu(user)
     
     def quizzesData(self, user, quiz=''):
         isdone = False
@@ -315,6 +328,16 @@ class Actions:
         if not failStr == '':
             print(helper.printColor("FAIL",f'You failed the next questions [{questionsKO}]')+':'+failStr)
             print(helper.getSeparator())
+
+        data = {}
+        data['questionsOK'] = questionsOK
+        data['questionsNOK'] = quiz.questions - questionsOK
+        data['questionsLog'] = failStr
+        data['questions'] = quiz.questions
+        data['quizName'] = quiz.name
+        dataBBDD = json.dumps(data)
+        grade = gradeModel.Grade('', user.id, quiz.id, dataBBDD, dateNowShortTime)
+        grade.register()
 
         time.sleep(5)
         input('Press ENTER or any KEY to continue!')

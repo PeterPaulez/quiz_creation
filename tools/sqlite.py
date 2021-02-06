@@ -18,6 +18,13 @@ class DataBase:
         'type_id TINYINT,'+
         'questions TINYING,'+
         'data TEXT,'+
+        'date_creation DATETIME)')
+        connection.commit()
+        cursor.execute('CREATE TABLE IF NOT EXISTS users_grades ('+
+        'id INTEGER PRIMARY KEY AUTOINCREMENT, '+
+        'user_id INTEGER, '+
+        'quiz_id varchar(255), '+
+        'data TEXT,'+
         'date_creation DATE)')
         connection.commit()
 
@@ -32,12 +39,12 @@ class DataBase:
         # KEYS
         keys = ''
         for key in data.keys():
-            keys += f'"{key}",'
+            keys += f"'{key}',"
         keys = keys[:-1]
         # VALUES
         values = ''
         for value in data.values():
-            values += f'"{value}",'
+            values += f"'{value}',"
         values = values[:-1]
 
         # QUERY
