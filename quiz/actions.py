@@ -3,9 +3,6 @@ import users.user as userModel
 import quiz.quiz as quizModel
 import users.grade as gradeModel
 import datetime, json, random, time
-dateNowFull=datetime.datetime.now()
-dateNowShort=dateNowFull.strftime("%Y-%m-%d")
-dateNowShortTime=dateNowFull.strftime("%Y-%m-%d %H:%m:%S")
 helper = helpers.Helpers()
 
 class Actions:
@@ -158,6 +155,8 @@ class Actions:
                     isdone = True
                     if isNew == True:
                         helper.printOk('Your Quiz is created, now you have to add questions and correct answers.')
+                        dateNowFull=datetime.datetime.now()
+                        dateNowShort=dateNowFull.strftime("%Y-%m-%d")
                         quizData = quizModel.Quiz('', user.id, quizName, quizTypeId, quizQuestions, '', dateNowShort)
                         quizData.register()
                     else:
@@ -336,6 +335,8 @@ class Actions:
         data['questions'] = quiz.questions
         data['quizName'] = quiz.name
         dataBBDD = json.dumps(data)
+        dateNowFull=datetime.datetime.now()
+        dateNowShortTime=dateNowFull.strftime("%Y-%m-%d %H:%M:%S")
         grade = gradeModel.Grade('', user.id, quiz.id, dataBBDD, dateNowShortTime)
         grade.register()
 
