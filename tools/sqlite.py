@@ -14,8 +14,9 @@ class DataBase:
         cursor.execute('CREATE TABLE IF NOT EXISTS quizzes ('+
         'id INTEGER PRIMARY KEY AUTOINCREMENT, '+
         'user_id INTEGER, '+
-        'title varchar(255), '+
-        'type TINYINT,'+
+        'name varchar(255), '+
+        'type_id TINYINT,'+
+        'questions TINYING,'+
         'data TEXT,'+
         'date_creation DATE)')
         connection.commit()
