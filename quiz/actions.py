@@ -224,7 +224,7 @@ class Actions:
                     quizQuestionstr = quizQuestion.split(':')
                     fileName = './data/'+quizQuestionstr[1]
                     from csv import reader
-                    with open(fileName, 'r') as content:
+                    with open(fileName, 'r', encoding='utf-8') as content:
                         csv_reader = reader(content)
                         for line in csv_reader:
                             quizQuestionLine = line[0]
