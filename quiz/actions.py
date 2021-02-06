@@ -316,7 +316,8 @@ class Actions:
                     answer = input(helper.printColor("OKBLUE", str(questionsDone)+'.- '+questionStr+'?')+'\r\n'+helper.getSeparator()+'\r\n')
                     #answer=input(str(questionsDone)+'.- '+questionStr+'?\r\n')
 
-                if correctAnswer.lower() == answer.lower():
+
+                if correctAnswer.lower().strip() == answer.lower().strip():
                     questionsOK += 1
                 else:
                     failStr += "\n - "+questionStr+": "+helper.printColor('FAIL',answer)+" ---> "+helper.printColor('OKGREEN',correctAnswer)
